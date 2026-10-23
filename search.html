@@ -339,9 +339,13 @@ es:{
     return out && out.condition ? out : null;
   }
   async function aiMatch(list, patient){
-    const pick = list.slice(0, 20);
-    const out = await callAI('match', { patient, trials: pick.map(x => ({ id: x.nct, title: x.title, summary: x.summary, eligibility: x.elig })) });
-    const byId = new Map((out.results || []).map(r => [r.id, r]));
+    // Small batches run side by side: each finishes in a few seconds, well inside the server's time limit.
+    const pick = list.slice(0, 20), size = 3, batches = [];
+    for (let i = 0; i < pick.length; i += size) batches.push(pick.slice(i, i + size));
+    const settled = await Promise.allSettled(batches.map(group => callAI('match', { patient, trials: group.map(x => ({ id: x.nct, title: x.title, summary: x.summary, eligibility: x.elig })) }, 25000)));
+    const byId = new Map();
+    settled.forEach(r => { if (r.status === 'fulfilled') (r.value.results || []).forEach(x => byId.set(x.id, x)); });
+    if (!byId.size) throw new Error('ai unavailable');
     pick.forEach(x => {
       const r = byId.get(x.nct); if (!r) return;
       x.rel = { tier: r.fit === 'good' ? 'good' : r.fit === 'unlikely' ? 'low' : 'maybe', score: 0, why: [], aiReason: r.reason };
@@ -349,6 +353,7 @@ es:{
     });
     return pick.filter(x => x.aiChecked).length;
   }
+
 
   // ---------- search ----------
   async function fetchStudies(cond, pt, radius){
