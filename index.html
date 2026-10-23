@@ -1,0 +1,349 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>CanSearcher · Cancer Clinical Trials Near You</title>
+<meta name="description" content="CanSearcher helps patients from every community find cancer clinical trials recruiting near them, explained in plain language.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Red+Hat+Display:wght@500;700&family=Red+Hat+Text:wght@400;500;700&family=Domine:wght@700&display=swap">
+<link rel="stylesheet" href="shared.css">
+<link rel="icon" type="image/svg+xml" href="logo.svg">
+<style>
+main{overflow-x:clip}
+section{padding-block:88px}
+.eyebrow{font-size:13px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--accent)}
+h2.sec{font-size:clamp(30px,4vw,46px);line-height:1.1}
+
+/* Announcement strip */
+.strip{background:var(--teal);color:#1B2350;font-weight:700;font-size:15px}
+.strip .inner{display:flex;justify-content:center;align-items:center;gap:14px;padding-block:9px;flex-wrap:wrap;text-align:center}
+.strip a{color:#FFFFFF;background:#1B2350;border-radius:6px;padding:3px 10px;font-size:12px;letter-spacing:.14em;text-transform:uppercase;text-decoration:none}
+
+/* Hero */
+.hero{background:var(--navy);color:var(--navy-ink);padding-block:40px 110px;overflow:hidden;position:relative}
+.hero .inner{display:grid;grid-template-columns:1.05fr .95fr;gap:40px;align-items:center;position:relative}
+.hero-copy{display:flex;flex-direction:column;gap:26px;min-width:0;position:relative;z-index:2}
+.hero h1{font-size:clamp(40px,5.6vw,74px);line-height:1.04;font-weight:700}
+.hero h1 em{font-style:normal;color:#FFFFFF;text-decoration:underline;text-decoration-color:#5CC6B5;text-decoration-thickness:.09em;text-underline-offset:.12em}
+.hero .lede{font-size:19px;color:var(--navy-muted);max-width:32em}
+.ctas{display:flex;flex-wrap:wrap;gap:22px;align-items:center}
+.textlink{color:var(--pink);font-weight:700;font-size:17px;text-underline-offset:5px}
+.note{font-size:14px;color:var(--navy-muted)}
+.art{position:relative;width:100%;max-width:560px;aspect-ratio:1/1.02;justify-self:end}
+.rings{position:absolute;inset:-12% -20% -12% -10%;width:130%;height:124%;pointer-events:none}
+.pin{position:absolute;border-radius:50% 50% 50% 0;overflow:hidden}
+.pin img{position:absolute;width:142%;height:142%;left:-21%;top:-21%;object-fit:cover;max-width:none}
+.tint img{filter:grayscale(1) contrast(.95) brightness(1.32)}
+.tint::after{content:"";position:absolute;inset:0;mix-blend-mode:multiply;pointer-events:none}
+.tint.blue::after{background:#5A8CF0}
+.tint.teal::after{background:#58C9B7}
+.tint.soft img{filter:grayscale(1) contrast(1) brightness(1.28) blur(.6px)}
+.p1{width:64%;aspect-ratio:1;left:6%;top:6%;transform:rotate(-38deg)}
+.p1 img{transform:rotate(38deg);object-position:58% 40%}
+.p2{width:44%;aspect-ratio:1;right:0;bottom:2%;transform:rotate(-58deg)}
+.p2 img{transform:rotate(58deg);object-position:60% 35%}
+.d1{width:30%;aspect-ratio:1;right:4%;top:0;transform:rotate(-20deg);background:var(--teal);opacity:.9}
+.d2{width:22%;aspect-ratio:1;left:0;bottom:6%;transform:rotate(-70deg);background:var(--accent)}
+.d3{width:11%;aspect-ratio:1;left:36%;top:86%;transform:rotate(-45deg);background:var(--pink)}
+
+/* Stats */
+.stats .inner{display:flex;flex-direction:column;gap:36px}
+.stats h2{max-width:22em}
+.stat-row{display:grid;grid-template-columns:repeat(3,1fr);gap:32px}
+.stat{border-top:2px solid var(--ink);padding-top:18px;display:flex;flex-direction:column;gap:10px}
+.stat b{font:700 clamp(48px,6vw,72px)/1 var(--display);color:var(--accent);letter-spacing:-.02em}
+.stat p{color:var(--muted)}
+.src{font-size:13px;color:var(--muted)}
+
+/* How it works */
+.steps{background:var(--surface)}
+.steps .inner,.about .inner,.faq .inner{display:flex;flex-direction:column;gap:32px}
+.step-row{display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
+.step{display:flex;flex-direction:column;gap:10px;background:var(--bg);border-radius:14px;padding:28px}
+.step .n{font:700 40px/1 var(--display);color:var(--teal)}
+.step h3{font-size:22px}
+.step p{color:var(--muted)}
+
+/* Why */
+.why .inner{display:grid;grid-template-columns:.9fr 1.1fr;gap:56px;align-items:center}
+.why-art{position:relative;aspect-ratio:1;max-width:440px;width:100%}
+.why-art .w1{width:86%;aspect-ratio:1;left:8%;top:4%;transform:rotate(-30deg)}
+.why-art .w1 img{transform:rotate(30deg);object-position:22% 12%}
+.why-art .wd{width:28%;aspect-ratio:1;right:0;bottom:4%;transform:rotate(-80deg);background:var(--teal)}
+.why-copy{display:flex;flex-direction:column;gap:18px}
+.why-copy p{color:var(--muted);font-size:18px}
+.why ul{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:12px}
+.why li{display:flex;gap:12px;align-items:flex-start}
+.why li::before{content:"";flex:none;width:12px;height:12px;margin-top:8px;border-radius:50% 50% 50% 0;transform:rotate(-45deg);background:var(--accent)}
+
+/* About */
+.about{background:var(--navy);color:var(--navy-ink)}
+.about .eyebrow{color:var(--pink)}
+.about-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
+.who{display:flex;flex-direction:column;gap:8px;border-top:1px solid rgba(255,255,255,.25);padding-top:18px}
+.who h3{font-size:20px}
+.who p{color:var(--navy-muted)}
+.privacy{background:var(--navy-2);border-radius:14px;padding:26px;display:flex;flex-direction:column;gap:8px}
+.privacy h3{font-size:21px}
+.privacy p{color:var(--navy-muted)}
+
+/* FAQ */
+.faq details{border-bottom:1px solid var(--line);padding-block:18px}
+.faq summary{cursor:pointer;font:700 20px/1.35 var(--display)}
+.faq details p{color:var(--muted);padding-top:10px;max-width:46em}
+.closing{background:var(--bg)}
+.closing .inner{display:flex;flex-direction:column;gap:18px;align-items:flex-start}
+.closing .note{color:var(--muted)}
+
+
+/* Motion: floating pins, gentle parallax, sections that rise into view */
+@keyframes float{0%,100%{translate:0 0}50%{translate:0 -14px}}
+@keyframes floatB{0%,100%{translate:0 0}50%{translate:0 10px}}
+.art .p1{animation:float 7s ease-in-out infinite}
+.art .p2{animation:floatB 6s ease-in-out infinite .6s}
+.art .d1{animation:floatB 8s ease-in-out infinite 1s}
+.art .d2{animation:float 6.5s ease-in-out infinite .3s}
+.art .d3{animation:float 4.5s ease-in-out infinite 1.4s}
+.why-art .w1{animation:float 8s ease-in-out infinite}
+.why-art .wd{animation:floatB 6s ease-in-out infinite .8s}
+.art,.why-art{will-change:transform;transition:transform .2s linear}
+.motion .reveal{opacity:0;translate:0 28px;transition:opacity .8s ease,translate .8s ease}
+.motion .reveal.in{opacity:1;translate:0 0}
+.step{transition:transform .25s ease,box-shadow .25s ease}
+.step:hover{transform:translateY(-6px);box-shadow:0 16px 32px -20px rgba(27,35,80,.35)}
+.btn{transition:transform .2s ease,box-shadow .2s ease}
+.btn:hover{transform:translateY(-2px);box-shadow:0 10px 24px -12px rgba(0,0,0,.45)}
+@media (prefers-reduced-motion:reduce){.motion .reveal{opacity:1;translate:none}}
+@media (max-width:560px){.strip a{display:none}.strip{font-size:14px}}
+@media (max-width:900px){
+  .hero .inner,.why .inner{grid-template-columns:1fr}
+  .art{justify-self:center;max-width:420px}
+  .stat-row,.step-row,.about-grid{grid-template-columns:1fr}
+  section{padding-block:56px}
+  .why-art{max-width:340px;justify-self:center}
+}
+</style>
+</head>
+<body>
+<header class="topbar gutter">
+  <div class="inner">
+    <a class="logo" href="index.html"><img class="logo-full" src="logo-full.svg" alt="CanSearcher" width="216" height="38"></a>
+    <nav class="nav">
+      <a class="link opt" href="#how" data-i18n="nav_how">How it works</a>
+      <a class="link opt" href="#about" data-i18n="nav_about">About</a>
+      <a class="link opt" href="#faq" data-i18n="nav_faq">Questions</a>
+      <div class="lang" role="group" aria-label="Language"><button type="button" data-lang="en"><span class="lfull">English</span><span class="lshort">EN</span></button><button type="button" data-lang="es"><span class="lfull">Español</span><span class="lshort">ES</span></button></div>
+      <a class="btn" href="search.html" data-i18n="nav_cta">Find a trial</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+<section class="hero gutter">
+  <div class="inner">
+    <div class="hero-copy">
+      <h1 data-i18n-html="h1">Every cancer patient deserves the chance to join a <em>clinical trial</em></h1>
+      <p class="lede" data-i18n="lede">Most patients are never asked. CanSearcher’s AI reads the rules of every trial recruiting near you, finds the ones that fit, and explains them in plain language, in about two minutes.</p>
+      <div class="ctas"><a class="btn on-dark" href="search.html" data-i18n="cta">Find trials near me</a><a class="textlink" href="#how" data-i18n="cta2">How it works</a></div>
+      <p class="note" data-i18n="note">Free. No account needed. We don't save your answers.</p>
+    </div>
+    <div class="art" aria-hidden="true">
+      <svg class="rings" viewBox="0 0 700 700" fill="none"><circle cx="360" cy="340" r="300" stroke="rgba(255,255,255,.10)" stroke-width="1.5"/><circle cx="420" cy="380" r="220" stroke="rgba(255,255,255,.08)" stroke-width="1.5"/></svg>
+      <div class="pin d1"></div>
+      <div class="pin d2"></div>
+      <div class="pin p1 tint blue"><img src="img/doctor-patient.jpg" alt=""></div>
+      <div class="pin p2 tint teal"><img src="img/care-team.jpg" alt=""></div>
+      <div class="pin d3"></div>
+    </div>
+  </div>
+</section>
+
+<section class="stats gutter" aria-labelledby="statsH">
+  <div class="inner">
+    <span class="eyebrow" data-i18n="stats_eb">The problem</span>
+    <h2 class="sec reveal" id="statsH" data-i18n="stats_h">Many patients are never offered a trial, and some communities are left out more than others.</h2>
+    <div class="stat-row reveal">
+      <div class="stat"><b>9 in 10</b><p data-i18n="s1">people have never been asked about a clinical trial by their doctor</p></div>
+      <div class="stat"><b>22%</b><p data-i18n="s2">of the expected number of Black patients took part in trials behind recent FDA cancer drug approvals</p></div>
+      <div class="stat"><b>44%</b><p data-i18n="s3">of the expected number of Hispanic patients took part in those same trials</p></div>
+    </div>
+    <p class="src" data-i18n="src">Sources: CISCRP Perceptions &amp; Insights Study, 2017; Loree et al., JAMA Oncology, 2019.</p>
+  </div>
+</section>
+
+<section class="steps gutter" id="how" aria-labelledby="howH">
+  <div class="inner">
+    <span class="eyebrow" data-i18n="how_eb">How it works</span>
+    <h2 class="sec reveal" id="howH" data-i18n="how_h">Three steps, about two minutes</h2>
+    <div class="step-row reveal">
+      <div class="step"><span class="n">1</span><h3 data-i18n="st1_h">Tell us the basics</h3><p data-i18n="st1_p">Your ZIP code, age, cancer type, and whether it is new or has spread. Nothing you wouldn't know.</p></div>
+      <div class="step"><span class="n">2</span><h3 data-i18n="st2_h">Our AI checks every nearby trial</h3><p data-i18n="st2_p">We pull every recruiting trial near you from ClinicalTrials.gov. Our AI reads each one’s eligibility rules, the fine print most patients can’t follow, and shows which fit you and why.</p></div>
+      <div class="step"><span class="n">3</span><h3 data-i18n="st3_h">Take the next step</h3><p data-i18n="st3_p">See each trial's location and contact, what to say when you call, and a summary to share with your doctor.</p></div>
+    </div>
+    <div><a class="btn" href="search.html" data-i18n="cta">Find trials near me</a></div>
+  </div>
+</section>
+
+<section class="why gutter" aria-labelledby="whyH">
+  <div class="inner">
+    <div class="why-art" aria-hidden="true">
+      <div class="pin wd"></div>
+      <div class="pin w1 tint blue soft"><img src="img/why-care.jpg" alt=""></div>
+    </div>
+    <div class="why-copy reveal">
+      <span class="eyebrow" data-i18n="why_eb">Why trials matter</span>
+      <h2 class="sec" id="whyH" data-i18n="why_h">Trials shape tomorrow's treatments, and help patients today</h2>
+      <p data-i18n="why_p">When a trial includes people from every background, doctors learn how a treatment works for everyone. When communities are missing, they miss out on new options, and new drugs reach the market without evidence for them.</p>
+      <ul>
+        <li data-i18n="w1">Early access to new treatments not yet available elsewhere</li>
+        <li data-i18n="w2">The study treatment is usually provided at no cost</li>
+        <li data-i18n="w3">Close monitoring by a specialist care team</li>
+        <li data-i18n="w4">You can ask questions first and stop taking part at any time</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section class="about gutter" id="about" aria-labelledby="aboutH">
+  <div class="inner">
+    <span class="eyebrow" data-i18n="ab_eb">About CanSearcher</span>
+    <h2 class="sec" id="aboutH" data-i18n="ab_h">Built with patients, clinicians and community groups</h2>
+    <div class="about-grid reveal">
+      <div class="who"><h3 data-i18n="ab1_h">Community input</h3><p data-i18n="ab1_p">Shaped by conversations with community organizations about what patients really need.</p></div>
+      <div class="who"><h3 data-i18n="ab2_h">Clinical input</h3><p data-i18n="ab2_p">Developed with input from clinicians, including leading cancer specialists at Rogel Cancer Center, Michigan Medicine.</p></div>
+      <div class="who"><h3 data-i18n="ab3_h">The team</h3><p data-i18n="ab3_p">Our team is made up of researchers, clinicians and experts in health informatics and machine learning.</p></div>
+    </div>
+    <div class="privacy reveal">
+      <h3 data-i18n="pv_h">Your privacy</h3>
+      <p data-i18n="pv_p">CanSearcher does not ask for your name and does not save your answers. Trial listings come from ClinicalTrials.gov, the public registry run by the U.S. National Library of Medicine. Your answers are shared with our AI only to check which trials fit, and are not stored.</p>
+    </div>
+  </div>
+</section>
+
+<section class="faq gutter" id="faq" aria-labelledby="faqH">
+  <div class="inner">
+    <span class="eyebrow" data-i18n="fq_eb">Questions</span>
+    <h2 class="sec" id="faqH" data-i18n="fq_h">Common questions</h2>
+    <div>
+      <details><summary data-i18n="f1_q">What is a clinical trial?</summary><p data-i18n="f1_a">A research study that tests a new way to prevent, find or treat cancer. Every new cancer treatment available today was first tested in a clinical trial.</p></details>
+      <details><summary data-i18n="f2_q">Does it cost money to join?</summary><p data-i18n="f2_a">The study treatment and study-only tests are usually free. Regular care may still be billed to your insurance. Ask the trial team what is covered, including travel and parking.</p></details>
+      <details><summary data-i18n="f3_q">Is it safe? Will I be treated like a guinea pig?</summary><p data-i18n="f3_a">Trials follow strict rules and are reviewed by independent boards that protect patients. Before you join, the team must explain the risks and benefits, and you can leave at any time for any reason.</p></details>
+      <details><summary data-i18n="f4_q">Does CanSearcher decide if I qualify?</summary><p data-i18n="f4_a">No. CanSearcher shows trials that may fit you. The trial team, together with your doctor, decides if a trial is right for you.</p></details>
+      <details><summary data-i18n="f5_q">Who can use it?</summary><p data-i18n="f5_a">Anyone: patients, family members, caregivers and doctors. It is free and works on any phone.</p></details>
+    </div>
+  </div>
+</section>
+
+<section class="closing gutter">
+  <div class="inner">
+    <h2 class="sec" data-i18n="cl_h">Ready to look?</h2>
+    <a class="btn" href="search.html" data-i18n="cta">Find trials near me</a>
+    <p class="note" data-i18n="fb">Testing CanSearcher? Send feedback to corededami@gmail.com.</p>
+  </div>
+</section>
+</main>
+
+<footer class="site gutter">
+  <div class="inner">
+    <p data-i18n="ft1">CanSearcher is a prototype and does not give medical advice. Talk with your doctor about your care.</p>
+    <p data-i18n="ft2">Trial information comes from ClinicalTrials.gov.</p>
+  </div>
+</footer>
+
+<script>
+window.CS_DICT = {
+en:{
+ page_title:'CanSearcher · Cancer Clinical Trials Near You', strip:'Free prototype · Now in English and Spanish', strip_cta:'Try it →',
+ nav_how:'How it works', nav_about:'About', nav_faq:'Questions', nav_cta:'Find a trial',
+ h1:'Every cancer patient deserves the chance to join a <em>clinical trial</em>',
+ lede:'Most patients are never asked. CanSearcher’s AI reads the rules of every trial recruiting near you, finds the ones that fit, and explains them in plain language, in about two minutes.',
+ cta:'Find trials near me', cta2:'How it works', note:"Free. No account needed. We don't save your answers.",
+ stats_eb:'The problem', stats_h:'Many patients are never offered a trial, and some communities are left out more than others.',
+ s1:'people have never been asked about a clinical trial by their doctor', s2:'of the expected number of Black patients took part in trials behind recent FDA cancer drug approvals',
+ s3:'of the expected number of Hispanic patients took part in those same trials', src:'Sources: CISCRP Perceptions & Insights Study, 2017; Loree et al., JAMA Oncology, 2019.',
+ how_eb:'How it works', how_h:'Three steps, about two minutes',
+ st1_h:'Tell us the basics', st1_p:"Your ZIP code, age, cancer type, and whether it is new or has spread. Nothing you wouldn't know.",
+ st2_h:'Our AI checks every nearby trial', st2_p:'We pull every recruiting trial near you from ClinicalTrials.gov. Our AI reads each one’s eligibility rules, the fine print most patients can’t follow, and shows which fit you and why.',
+ st3_h:'Take the next step', st3_p:"See each trial's location and contact, what to say when you call, and a summary to share with your doctor.",
+ why_eb:'Why trials matter', why_h:"Trials shape tomorrow's treatments, and help patients today",
+ why_p:'When a trial includes people from every background, doctors learn how a treatment works for everyone. When communities are missing, they miss out on new options, and new drugs reach the market without evidence for them.',
+ w1:'Early access to new treatments not yet available elsewhere', w2:'The study treatment is usually provided at no cost', w3:'Close monitoring by a specialist care team', w4:'You can ask questions first and stop taking part at any time',
+ ab_eb:'About CanSearcher', ab_h:'Built with patients, clinicians and community groups',
+ ab1_h:'Community input', ab1_p:'Shaped by conversations with community organizations about what patients really need.',
+ ab2_h:'Clinical input', ab2_p:'Developed with input from clinicians, including leading cancer specialists at Rogel Cancer Center, Michigan Medicine.',
+ ab3_h:'The team', ab3_p:'Our team is made up of researchers, clinicians and experts in health informatics and machine learning.',
+ pv_h:'Your privacy', pv_p:'CanSearcher does not ask for your name and does not save your answers. Trial listings come from ClinicalTrials.gov, the public registry run by the U.S. National Library of Medicine. Your answers are shared with our AI only to check which trials fit, and are not stored.',
+ fq_eb:'Questions', fq_h:'Common questions',
+ f1_q:'What is a clinical trial?', f1_a:'A research study that tests a new way to prevent, find or treat cancer. Every new cancer treatment available today was first tested in a clinical trial.',
+ f2_q:'Does it cost money to join?', f2_a:'The study treatment and study-only tests are usually free. Regular care may still be billed to your insurance. Ask the trial team what is covered, including travel and parking.',
+ f3_q:'Is it safe? Will I be treated like a guinea pig?', f3_a:'Trials follow strict rules and are reviewed by independent boards that protect patients. Before you join, the team must explain the risks and benefits, and you can leave at any time for any reason.',
+ f4_q:'Does CanSearcher decide if I qualify?', f4_a:'No. CanSearcher shows trials that may fit you. The trial team, together with your doctor, decides if a trial is right for you.',
+ f5_q:'Who can use it?', f5_a:'Anyone: patients, family members, caregivers and doctors. It is free and works on any phone.',
+ cl_h:'Ready to look?', fb:'Testing CanSearcher? Send feedback to corededami@gmail.com.',
+ ft1:'CanSearcher is a prototype and does not give medical advice. Talk with your doctor about your care.', ft2:'Trial information comes from ClinicalTrials.gov.'
+},
+es:{
+ page_title:'CanSearcher · Estudios clínicos de cáncer cerca de usted', strip:'Prototipo gratuito · Ahora en inglés y español', strip_cta:'Pruébelo →',
+ nav_how:'Cómo funciona', nav_about:'Quiénes somos', nav_faq:'Preguntas', nav_cta:'Buscar un estudio',
+ h1:'Todo paciente con cáncer merece la oportunidad de participar en un <em>estudio clínico</em>',
+ lede:'A la mayoría nunca se lo ofrecen. La IA de CanSearcher lee los requisitos de cada estudio que recluta cerca de usted, encuentra los que le sirven y se los explica en lenguaje sencillo, en unos dos minutos.',
+ cta:'Buscar estudios cerca de mí', cta2:'Cómo funciona', note:'Gratis. Sin crear cuenta. No guardamos sus respuestas.',
+ stats_eb:'El problema', stats_h:'A muchos pacientes nunca les ofrecen un estudio, y algunas comunidades quedan más excluidas que otras.',
+ s1:'personas nunca han recibido de su médico información sobre un estudio clínico', s2:'del número esperado de pacientes afroamericanos participó en los estudios de aprobaciones recientes de medicamentos contra el cáncer',
+ s3:'del número esperado de pacientes hispanos participó en esos mismos estudios', src:'Fuentes: CISCRP Perceptions & Insights Study, 2017; Loree et al., JAMA Oncology, 2019.',
+ how_eb:'Cómo funciona', how_h:'Tres pasos, unos dos minutos',
+ st1_h:'Díganos lo básico', st1_p:'Su código postal, edad, tipo de cáncer y si es nuevo o se ha extendido. Nada que usted no sepa.',
+ st2_h:'Nuestra IA revisa cada estudio cercano', st2_p:'Traemos todos los estudios que reclutan cerca de usted desde ClinicalTrials.gov. Nuestra IA lee los requisitos de cada uno, la letra pequeña que pocos pacientes entienden, y le muestra cuáles le sirven y por qué.',
+ st3_h:'Dé el siguiente paso', st3_p:'Vea el lugar y el contacto de cada estudio, qué decir cuando llame y un resumen para compartir con su médico.',
+ why_eb:'Por qué importan los estudios', why_h:'Los estudios forman los tratamientos del mañana y ayudan a pacientes hoy',
+ why_p:'Cuando un estudio incluye personas de todos los orígenes, los médicos aprenden cómo funciona un tratamiento para todos. Cuando faltan comunidades, pierden opciones nuevas, y los medicamentos llegan al mercado sin evidencia para ellas.',
+ w1:'Acceso temprano a tratamientos nuevos que aún no existen en otro lugar', w2:'El tratamiento del estudio suele ser gratuito', w3:'Seguimiento cercano por un equipo especializado', w4:'Puede hacer preguntas primero y dejar el estudio en cualquier momento',
+ ab_eb:'Sobre CanSearcher', ab_h:'Creado con pacientes, médicos y grupos comunitarios',
+ ab1_h:'Aportes de la comunidad', ab1_p:'Diseñado a partir de conversaciones con organizaciones comunitarias sobre lo que los pacientes realmente necesitan.',
+ ab2_h:'Aportes clínicos', ab2_p:'Desarrollado con aportes de médicos, incluidos destacados especialistas en cáncer del Rogel Cancer Center, Michigan Medicine.',
+ ab3_h:'El equipo', ab3_p:'Nuestro equipo está formado por investigadores, médicos y expertos en informática de la salud y aprendizaje automático.',
+ pv_h:'Su privacidad', pv_p:'CanSearcher no pide su nombre ni guarda sus respuestas. Los estudios vienen de ClinicalTrials.gov, el registro público de la Biblioteca Nacional de Medicina de EE. UU. Sus respuestas se comparten con nuestra IA solo para ver qué estudios le sirven, y no se guardan.',
+ fq_eb:'Preguntas', fq_h:'Preguntas frecuentes',
+ f1_q:'¿Qué es un estudio clínico?', f1_a:'Una investigación que prueba una nueva forma de prevenir, detectar o tratar el cáncer. Todos los tratamientos contra el cáncer que existen hoy se probaron primero en un estudio clínico.',
+ f2_q:'¿Cuesta dinero participar?', f2_a:'El tratamiento del estudio y las pruebas propias del estudio suelen ser gratuitos. La atención regular puede facturarse a su seguro. Pregunte al equipo qué está cubierto, incluido el transporte y el estacionamiento.',
+ f3_q:'¿Es seguro? ¿Me tratarán como un conejillo de indias?', f3_a:'Los estudios siguen reglas estrictas y los revisan comités independientes que protegen a los pacientes. Antes de participar, el equipo debe explicarle los riesgos y beneficios, y puede salir en cualquier momento y por cualquier motivo.',
+ f4_q:'¿CanSearcher decide si califico?', f4_a:'No. CanSearcher muestra estudios que podrían servirle. El equipo del estudio, junto con su médico, decide si un estudio es adecuado para usted.',
+ f5_q:'¿Quién puede usarlo?', f5_a:'Cualquier persona: pacientes, familiares, cuidadores y médicos. Es gratis y funciona en cualquier teléfono.',
+ cl_h:'¿Listo para buscar?', fb:'¿Está probando CanSearcher? Envíe sus comentarios a corededami@gmail.com.',
+ ft1:'CanSearcher es un prototipo y no da consejos médicos. Hable con su médico sobre su atención.', ft2:'La información de los estudios viene de ClinicalTrials.gov.'
+}};
+</script>
+<script src="shared.js"></script>
+<script>
+(function(){
+  var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (reduce || !('IntersectionObserver' in window)) return;
+  document.documentElement.classList.add('motion');
+  var pending = [].slice.call(document.querySelectorAll('.reveal'));
+  function reveal(){
+    pending = pending.filter(function(el){
+      if (el.getBoundingClientRect().top < window.innerHeight * 0.92){ el.classList.add('in'); return false; }
+      return true;
+    });
+  }
+  // Parallax: picture groups drift at a different speed from the page as you scroll
+  var layers = [[document.querySelector('.art'), -0.06], [document.querySelector('.why-art'), -0.08]];
+  var ticking = false;
+  function update(){
+    layers.forEach(function(l){
+      if (!l[0]) return;
+      var r = l[0].getBoundingClientRect();
+      var mid = r.top + r.height / 2 - window.innerHeight / 2;
+      l[0].style.transform = 'translateY(' + (mid * l[1]).toFixed(1) + 'px)';
+    });
+    reveal();
+    ticking = false;
+  }
+  window.addEventListener('scroll', function(){ if (!ticking){ ticking = true; requestAnimationFrame(update); } }, { passive: true });
+  update();
+})();
+</script>
+
+</body>
+</html>

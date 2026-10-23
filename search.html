@@ -1,0 +1,579 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Find a Trial · CanSearcher</title>
+<meta name="description" content="Find cancer clinical trials recruiting near you, explained in plain language.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Red+Hat+Display:wght@500;700&family=Red+Hat+Text:wght@400;500;700&family=Domine:wght@700&display=swap">
+<link rel="stylesheet" href="shared.css">
+<link rel="icon" type="image/svg+xml" href="logo.svg">
+<style>
+.page-head{background:var(--navy);color:var(--navy-ink);padding-block:44px 48px}
+.head{display:flex;flex-direction:column;gap:12px}
+.head h1{font-size:clamp(32px,4.4vw,52px);line-height:1.08}
+.head p{color:var(--navy-muted);font-size:18px;max-width:40em}
+main{padding-block:32px 56px}
+.main{max-width:1160px;margin:0 auto;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.2fr);gap:40px;align-items:start}
+.side{position:sticky;top:96px;max-height:calc(100vh - 112px);overflow:auto;border-radius:14px}
+.content{display:flex;flex-direction:column;gap:18px;min-width:0}
+.content > .status:empty{display:none}
+@media (max-width:900px){.main{grid-template-columns:1fr}.side{position:static;max-height:none;overflow:visible}}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:20px;display:flex;flex-direction:column;gap:18px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:14px}
+label,.q{display:flex;flex-direction:column;gap:6px;font-weight:700;font-size:15px;min-width:0}
+.q{border:0;padding:0;margin:0}
+.q legend{padding:0;margin-bottom:6px}
+.hint{font-weight:400;color:var(--muted);font-size:14px}
+input,select,textarea{background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:10px 12px;width:100%}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chips label{flex-direction:row;align-items:center;gap:0;font-weight:600;font-size:15px}
+.chips input{position:absolute;opacity:0;width:1px;height:1px}
+.chips span{display:inline-block;border:1.5px solid var(--line);border-radius:999px;padding:7px 14px;cursor:pointer;background:var(--bg)}
+.chips input:checked + span{border-color:var(--accent);background:var(--soft);color:var(--accent)}
+.chips input:focus-visible + span{outline:3px solid var(--accent);outline-offset:2px}
+details.more{border-top:1px solid var(--line);padding-top:12px}
+details.more summary{cursor:pointer;font-weight:700;color:var(--accent)}
+.more-body{display:flex;flex-direction:column;gap:14px;padding-top:14px}
+.row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.status{color:var(--muted)}
+.status.err{color:var(--mid);background:var(--mid-soft);padding:12px;border-radius:10px}
+.toolbar{display:flex;flex-wrap:wrap;justify-content:space-between;gap:10px;align-items:center}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.seg button{background:var(--surface);border:0;padding:8px 14px;font-weight:700;cursor:pointer;color:var(--muted)}
+.seg button[aria-pressed="true"]{background:var(--ink);color:var(--bg)}
+.legend{display:flex;flex-wrap:wrap;gap:8px;font-size:14px;color:var(--muted);align-items:center}
+.results{display:flex;flex-direction:column;gap:14px}
+.trial,.hosp{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:18px;display:flex;flex-direction:column;gap:10px;min-width:0}
+.trial.low{opacity:.88}
+.trial h3,.hosp h3{font-size:18px;line-height:1.3}
+.top{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+.dist{font:700 22px/1 var(--display);color:var(--accent);font-variant-numeric:tabular-nums}
+.chip{display:inline-block;font-size:13px;font-weight:700;padding:3px 10px;border-radius:999px;background:var(--soft);color:var(--accent)}
+.chip.good{background:var(--ok-soft);color:var(--ok)}
+.chip.maybe{background:var(--mid-soft);color:var(--mid)}
+.chip.low{background:var(--low-soft);color:var(--low)}
+.chip.ai{background:#E6F6F3;color:#1F6E62}
+.chips-row{display:flex;flex-wrap:wrap;gap:6px}
+.why{font-size:14px;color:var(--muted)}
+.site,.contact{font-size:15px;overflow-wrap:anywhere}
+.site small,.contact{color:var(--muted)}
+.summary{background:var(--bg);border-radius:10px;padding:12px;font-size:15px;color:var(--muted)}
+.summary.ai{color:var(--ink)}
+details.next{border-top:1px solid var(--line);padding-top:10px}
+details.next summary{cursor:pointer;font-weight:700;color:var(--accent)}
+.next-body{display:flex;flex-direction:column;gap:12px;padding-top:12px;font-size:15px}
+.script{background:var(--bg);border-left:4px solid var(--accent);padding:12px;border-radius:0 10px 10px 0;white-space:pre-wrap}
+.next-body ul{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:4px}
+.copied{font-size:14px;color:var(--ok);font-weight:700}
+.hosp ul{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:6px;font-size:15px}
+.help{background:var(--navy);color:var(--navy-ink);border-radius:14px;padding:22px;display:flex;flex-direction:column;gap:12px}
+.help h2{font-size:22px}
+.help ul{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:8px}
+.help a{color:inherit;font-weight:700}
+.help p{opacity:.9}
+.hidden{display:none!important}
+</style>
+</head>
+<body>
+<header class="topbar gutter">
+  <div class="inner">
+    <a class="logo" href="index.html"><img class="logo-full" src="logo-full.svg" alt="CanSearcher" width="216" height="38"></a>
+    <nav class="nav">
+      <a class="link opt" href="index.html#about" data-i18n="nav_about">About</a>
+      <div class="lang" role="group" aria-label="Language"><button type="button" data-lang="en"><span class="lfull">English</span><span class="lshort">EN</span></button><button type="button" data-lang="es"><span class="lfull">Español</span><span class="lshort">ES</span></button></div>
+    </nav>
+  </div>
+</header>
+
+<div class="page-head gutter">
+  <div class="inner head">
+    <h1 data-i18n="h1">Find a cancer clinical trial near you</h1>
+    <p data-i18n="sub">Answer a few questions. Our AI reads the eligibility rules of recruiting trials near you and shows which fit you best.</p>
+  </div>
+</div>
+<main class="gutter">
+<div class="main">
+<aside class="side">
+  <form id="form" class="card" novalidate>
+    <div class="grid">
+      <label for="zip"><span data-i18n="f_zip">ZIP code</span><input id="zip" inputmode="numeric" maxlength="5" value="48201" autocomplete="postal-code"></label>
+      <label for="age"><span data-i18n="f_age">Age</span><input id="age" type="number" min="0" max="120" value="55"></label>
+      <label for="sex"><span data-i18n="f_sex">Sex</span><select id="sex"><option value="FEMALE" data-i18n="female">Female</option><option value="MALE" data-i18n="male">Male</option></select></label>
+      <label for="radius"><span data-i18n="f_dist">Distance</span><select id="radius"><option value="25" data-i18n="d25">Within 25 miles</option><option value="50" selected data-i18n="d50">Within 50 miles</option><option value="100" data-i18n="d100">Within 100 miles</option><option value="250" data-i18n="d250">Within 250 miles</option></select></label>
+    </div>
+    <label for="cancer"><span data-i18n="f_cancer">Cancer type</span><select id="cancer"></select></label>
+
+    <fieldset class="q">
+      <legend data-i18n="q_stage">Which best describes your cancer?</legend>
+      <div class="chips">
+        <label><input type="radio" name="stage" value="new" checked><span data-i18n="s_new">New diagnosis, has not spread</span></label>
+        <label><input type="radio" name="stage" value="adv"><span data-i18n="s_adv">Came back or has spread</span></label>
+        <label><input type="radio" name="stage" value="unsure"><span data-i18n="s_unsure">Not sure</span></label>
+      </div>
+    </fieldset>
+    <fieldset class="q">
+      <legend data-i18n="q_treat">Have you had treatment for it?</legend>
+      <div class="chips">
+        <label><input type="radio" name="treat" value="none" checked><span data-i18n="t_none">Not yet</span></label>
+        <label><input type="radio" name="treat" value="in"><span data-i18n="t_in">In treatment now</span></label>
+        <label><input type="radio" name="treat" value="done"><span data-i18n="t_done">Finished treatment</span></label>
+      </div>
+    </fieldset>
+
+    <details class="more" id="aiBox">
+      <summary data-i18n="more">More options: describe it in your own words or add a photo</summary>
+      <div class="more-body">
+        <label for="describe"><span data-i18n="f_desc">Describe your diagnosis in your own words</span><span class="hint" data-i18n="f_desc_h">Our AI reads what you write to understand your diagnosis.</span><textarea id="describe" rows="2" data-i18n-ph="f_desc_ph" placeholder="For example: stage 2 triple negative breast cancer"></textarea></label>
+        <label for="photo"><span data-i18n="f_photo">Photo of a diagnosis note</span><span class="hint" data-i18n="f_photo_h">Our AI reads it to find your cancer type. The photo is not saved.</span><input id="photo" type="file" accept="image/*"></label>
+      </div>
+    </details>
+
+    <div class="row"><button class="btn" id="go" type="submit" data-i18n="go">Find trials near me</button><span id="interp" class="hint"></span></div>
+  </form>
+</aside>
+<div class="content">
+
+  <p id="status" class="status" role="status" aria-live="polite"></p>
+
+  <div id="toolbar" class="toolbar hidden">
+    <div class="seg" role="group" aria-label="View">
+      <button type="button" id="vTrial" aria-pressed="true" data-i18n="v_trial">By trial</button>
+      <button type="button" id="vHosp" aria-pressed="false" data-i18n="v_hosp">By hospital</button>
+    </div>
+    <div class="legend"><span class="chip good" data-i18n="good">Good match</span><span class="chip maybe" data-i18n="maybe">May fit</span><span class="chip low" data-i18n="low">Less likely</span></div>
+  </div>
+
+  <div id="results" class="results"></div>
+  <div class="row"><button type="button" class="ghost hidden" id="moreBtn"></button></div>
+
+  <section class="help" aria-labelledby="helpH">
+    <h2 id="helpH" data-i18n="help_h">Help with costs, travel and questions</h2>
+    <p data-i18n="help_p">The study treatment is usually provided at no cost. Ask the trial team what else is covered. These free services can help:</p>
+    <ul>
+      <li><a href="https://www.cancer.gov/contact" target="_blank" rel="noopener" data-i18n="r_nci">National Cancer Institute: 1-800-4-CANCER (1-800-422-6237)</a> <span data-i18n="r_nci_d">free answers about trials, in English and Spanish</span></li>
+      <li><a href="https://www.cancer.org/support-programs-and-services.html" target="_blank" rel="noopener" data-i18n="r_acs">American Cancer Society: 1-800-227-2345</a> <span data-i18n="r_acs_d">rides to treatment and free lodging programs</span></li>
+      <li><a href="https://www.lazarex.org" target="_blank" rel="noopener" data-i18n="r_laz">Lazarex Cancer Foundation</a> <span data-i18n="r_laz_d">helps pay travel costs for clinical trials</span></li>
+      <li><a href="https://www.sistersnetworkinc.org" target="_blank" rel="noopener" data-i18n="r_sni">Sisters Network Inc.</a> <span data-i18n="r_sni_d">support for Black breast cancer survivors</span></li>
+    </ul>
+  </section>
+</div>
+</div>
+</main>
+
+<footer class="site gutter">
+  <div class="inner">
+    <p data-i18n="foot1">Trial data comes live from ClinicalTrials.gov, run by the U.S. National Library of Medicine. Match labels are a guide only: the trial team or your doctor decides if a trial is right for you.</p>
+    <p data-i18n="foot2">We do not save your answers. Trial listings come from ClinicalTrials.gov; your answers go to our AI only to check which trials fit, and are not stored.</p>
+  </div>
+</footer>
+
+<script>
+window.CS_DICT = {
+en:{
+ page_title:'Find a Trial · CanSearcher', nav_about:'About', proto:'Prototype · not medical advice',
+ h1:'Find a cancer clinical trial near you', sub:'Answer a few questions. Our AI reads the eligibility rules of recruiting trials near you and shows which fit you best.',
+ f_zip:'ZIP code', f_age:'Age', f_sex:'Sex', female:'Female', male:'Male', f_dist:'Distance', d25:'Within 25 miles', d50:'Within 50 miles', d100:'Within 100 miles', d250:'Within 250 miles',
+ f_cancer:'Cancer type', other:'Something else (describe it under More options)',
+ q_stage:'Which best describes your cancer?', s_new:'New diagnosis, has not spread', s_adv:'Came back or has spread', s_unsure:'Not sure',
+ q_treat:'Have you had treatment for it?', t_none:'Not yet', t_in:'In treatment now', t_done:'Finished treatment',
+ more:'More options: describe it in your own words or add a photo', f_desc:'Describe your diagnosis in your own words', f_desc_h:'Our AI reads what you write to understand your diagnosis.', f_desc_ph:'For example: stage 2 triple negative breast cancer',
+ f_photo:'Photo of a diagnosis note', f_photo_h:'Our AI reads it to find your cancer type. The photo is not saved.', f_key:'AI key (optional)', f_key_h:'An Anthropic API key turns on plain-language explanations and photo reading. It stays in this browser tab only.',
+ go:'Find trials near me', v_trial:'By trial', v_hosp:'By hospital', good:'Good match', maybe:'May fit', low:'Less likely',
+ help_h:'Help with costs, travel and questions', help_p:'The study treatment is usually provided at no cost. Ask the trial team what else is covered. These free services can help:',
+ r_nci:'National Cancer Institute: 1-800-4-CANCER (1-800-422-6237)', r_nci_d:'free answers about trials, in English and Spanish',
+ r_acs:'American Cancer Society: 1-800-227-2345', r_acs_d:'rides to treatment and free lodging programs',
+ r_laz:'Lazarex Cancer Foundation', r_laz_d:'helps pay travel costs for clinical trials', r_sni:'Sisters Network Inc.', r_sni_d:'support for Black breast cancer survivors',
+ foot1:'Trial data comes live from ClinicalTrials.gov, run by the U.S. National Library of Medicine. Match labels are a guide only: the trial team or your doctor decides if a trial is right for you.',
+ foot2:'We do not save your answers. Trial listings come from ClinicalTrials.gov; your answers go to our AI only to check which trials fit, and are not stored.',
+ st_example:'Example search: a 55-year-old woman in Detroit with newly diagnosed breast cancer. Change your answers to search for yourself.',
+ st_zip_bad:'Enter a 5-digit ZIP code.', st_age_bad:'Enter an age between 0 and 120.', st_need_cancer:'Choose a cancer type, or describe it under More options.',
+ st_reading:'Reading your description…', st_locating:'Finding your location…', st_zip_nf:'That ZIP code was not found. Check it and try again.',
+ st_searching:'Searching recruiting trials near {place}…', st_ct_down:'ClinicalTrials.gov did not respond. Check your internet connection and try again.',
+ st_none:'No recruiting trials for this cancer within {r} miles of {place}. Try a larger distance.',
+ st_done:'{n} recruiting trials within {r} miles of {place}: {g} good matches, {m} that may fit. Best matches first, then closest.',
+ st_hidden:' Left out because of age or sex limits: {h}.',
+ ai_reading:'Our AI is reading the eligibility rules of the {n} closest trials to check which fit you…', ai_done:' Our AI checked the {n} closest trials against their eligibility rules.', ai_off:' (AI checking is unavailable right now, so these use basic matching.)', ai_chip:'AI checked',
+ interp_ai:'AI searched for: {c}', interp_txt:'Searched for: {c}', interp_photo_skip:'Photo skipped: add an AI key to read it.',
+ more_btn:'Show {n} more trials', mi:'mi', recruiting:'Recruiting', obs:'Observational: no new treatment',
+ ages:'Ages {a} to {b}', any:'any', all_ages:'All ages', all_sex:'All sexes', women:'Women only', men:'Men only', sponsor:'Sponsor: {s}',
+ why_title:'Why: ', w_name:'Studies your cancer type', w_early:'For early-stage or newly diagnosed cancer', w_adv:'For cancer that came back or spread',
+ w_adv_bad:'Mainly for cancer that came back or spread', w_early_bad:'Mainly for early-stage cancer', w_prior_bad:'For people who already had treatment',
+ w_naive:'For people who have not had treatment yet', w_naive_bad:'Mainly for people who have not had treatment yet', w_solid:'Early study open to many cancer types',
+ w_obs:'Collects information or tests support care; no new cancer drug',
+ explain:'Explain in plain language', explaining:'Explaining…', explained:'Explained', explain_need:'Add an AI key under More options to get a plain-language explanation.',
+ explain_err:'The explanation did not load. Check the AI key and try again.', details:'Full details ({id})',
+ next:'What to do next', next_1:'Call or email the trial team. You can say:', next_2:'Questions to ask:',
+ q1:'Do I qualify? What tests are needed to find out?', q2:'Will this cost me anything? Is travel or parking paid?', q3:'How often would I need to come in, and for how long?',
+ q4:'What are the possible side effects?', q5:'Can I keep my own cancer doctor?', q6:'Can I stop taking part at any time?',
+ script:'Hi, my name is ______. I found the study {id}, “{title}”, at {site}. I have {cancer}, and I would like to know if I might qualify.',
+ copy_script:'Copy what to say', share:'Share with my doctor', email_it:'Email it', copied:'Copied',
+ share_text:'Clinical trial to discuss at my next visit:\n{title}\nStudy ID: {id}\nSite: {site}, {place} ({dist} miles away)\nContact: {contact}\nDetails: {url}',
+ no_contact:'see ClinicalTrials.gov', h_trials:'{n} trials here', h_good:'{g} good matches', h_contact:'Contact: {c}', your_cancer:'my cancer'
+},
+es:{
+ page_title:'Buscar un estudio · CanSearcher', nav_about:'Quiénes somos', proto:'Prototipo · no es consejo médico',
+ h1:'Encuentre un estudio clínico de cáncer cerca de usted', sub:'Responda unas preguntas. Nuestra IA lee los requisitos de los estudios que reclutan cerca de usted y le muestra cuáles le sirven más.',
+ f_zip:'Código postal', f_age:'Edad', f_sex:'Sexo', female:'Mujer', male:'Hombre', f_dist:'Distancia', d25:'A menos de 25 millas', d50:'A menos de 50 millas', d100:'A menos de 100 millas', d250:'A menos de 250 millas',
+ f_cancer:'Tipo de cáncer', other:'Otro (descríbalo en Más opciones)',
+ q_stage:'¿Qué describe mejor su cáncer?', s_new:'Diagnóstico nuevo, no se ha extendido', s_adv:'Volvió o se ha extendido', s_unsure:'No estoy seguro/a',
+ q_treat:'¿Ha recibido tratamiento?', t_none:'Todavía no', t_in:'Estoy en tratamiento', t_done:'Terminé el tratamiento',
+ more:'Más opciones: descríbalo con sus palabras o agregue una foto', f_desc:'Describa su diagnóstico con sus propias palabras', f_desc_h:'Nuestra IA lee lo que escribe para entender su diagnóstico.', f_desc_ph:'Por ejemplo: cáncer de mama triple negativo, etapa 2',
+ f_photo:'Foto de una nota de diagnóstico', f_photo_h:'Nuestra IA la lee para encontrar su tipo de cáncer. La foto no se guarda.', f_key:'Clave de IA (opcional)', f_key_h:'Una clave de API de Anthropic activa explicaciones sencillas y la lectura de fotos. Solo se guarda en esta pestaña.',
+ go:'Buscar estudios cerca de mí', v_trial:'Por estudio', v_hosp:'Por hospital', good:'Buena opción', maybe:'Podría servir', low:'Menos probable',
+ help_h:'Ayuda con costos, transporte y preguntas', help_p:'El tratamiento del estudio suele ser gratuito. Pregunte al equipo del estudio qué más cubre. Estos servicios gratuitos pueden ayudar:',
+ r_nci:'Instituto Nacional del Cáncer: 1-800-4-CANCER (1-800-422-6237)', r_nci_d:'respuestas gratuitas sobre estudios, en inglés y español',
+ r_acs:'Sociedad Americana Contra el Cáncer: 1-800-227-2345', r_acs_d:'transporte al tratamiento y alojamiento gratuito',
+ r_laz:'Lazarex Cancer Foundation', r_laz_d:'ayuda a pagar los viajes para estudios clínicos', r_sni:'Sisters Network Inc.', r_sni_d:'apoyo para sobrevivientes afroamericanas de cáncer de mama',
+ foot1:'Los datos vienen en vivo de ClinicalTrials.gov, de la Biblioteca Nacional de Medicina de EE. UU. Las etiquetas son solo una guía: el equipo del estudio o su médico decide si un estudio es adecuado para usted.',
+ foot2:'No guardamos sus respuestas. Los estudios vienen de ClinicalTrials.gov; sus respuestas van a nuestra IA solo para ver qué estudios le sirven, y no se guardan.',
+ st_example:'Búsqueda de ejemplo: una mujer de 55 años en Detroit con cáncer de mama recién diagnosticado. Cambie sus respuestas para buscar para usted.',
+ st_zip_bad:'Escriba un código postal de 5 dígitos.', st_age_bad:'Escriba una edad entre 0 y 120.', st_need_cancer:'Elija un tipo de cáncer o descríbalo en Más opciones.',
+ st_reading:'Leyendo su descripción…', st_locating:'Buscando su ubicación…', st_zip_nf:'No encontramos ese código postal. Revíselo e intente de nuevo.',
+ st_searching:'Buscando estudios que reclutan cerca de {place}…', st_ct_down:'ClinicalTrials.gov no respondió. Revise su conexión a internet e intente de nuevo.',
+ st_none:'No hay estudios que recluten para este cáncer a menos de {r} millas de {place}. Pruebe una distancia mayor.',
+ st_done:'{n} estudios que reclutan a menos de {r} millas de {place}: {g} buenas opciones y {m} que podrían servir. Primero las mejores, luego las más cercanas.',
+ st_hidden:' Omitidos por límites de edad o sexo: {h}.',
+ ai_reading:'Nuestra IA está leyendo los requisitos de los {n} estudios más cercanos para ver cuáles le sirven…', ai_done:' Nuestra IA revisó los {n} estudios más cercanos según sus requisitos.', ai_off:' (La revisión con IA no está disponible ahora; se usa una comparación básica.)', ai_chip:'Revisado por IA',
+ interp_ai:'La IA buscó: {c}', interp_txt:'Se buscó: {c}', interp_photo_skip:'Foto omitida: agregue una clave de IA para leerla.',
+ more_btn:'Mostrar {n} estudios más', mi:'mi', recruiting:'Reclutando', obs:'Observacional: sin tratamiento nuevo',
+ ages:'Edades {a} a {b}', any:'cualquiera', all_ages:'Todas las edades', all_sex:'Todos los sexos', women:'Solo mujeres', men:'Solo hombres', sponsor:'Patrocinador: {s}',
+ why_title:'Por qué: ', w_name:'Estudia su tipo de cáncer', w_early:'Para cáncer en etapa temprana o recién diagnosticado', w_adv:'Para cáncer que volvió o se extendió',
+ w_adv_bad:'Principalmente para cáncer que volvió o se extendió', w_early_bad:'Principalmente para cáncer en etapa temprana', w_prior_bad:'Para personas que ya recibieron tratamiento',
+ w_naive:'Para personas que aún no han recibido tratamiento', w_naive_bad:'Principalmente para personas sin tratamiento previo', w_solid:'Estudio inicial abierto a muchos tipos de cáncer',
+ w_obs:'Recoge información o prueba cuidados de apoyo; no es un medicamento nuevo',
+ explain:'Explicar en lenguaje sencillo', explaining:'Explicando…', explained:'Explicado', explain_need:'Agregue una clave de IA en Más opciones para obtener una explicación sencilla.',
+ explain_err:'La explicación no cargó. Revise la clave de IA e intente de nuevo.', details:'Detalles completos ({id})',
+ next:'Qué hacer después', next_1:'Llame o escriba al equipo del estudio. Puede decir:', next_2:'Preguntas para hacer:',
+ q1:'¿Califico? ¿Qué pruebas necesito para saberlo?', q2:'¿Me costará algo? ¿Pagan el transporte o el estacionamiento?', q3:'¿Con qué frecuencia tendría que ir y por cuánto tiempo?',
+ q4:'¿Cuáles son los posibles efectos secundarios?', q5:'¿Puedo seguir con mi médico de cáncer?', q6:'¿Puedo dejar el estudio en cualquier momento?',
+ script:'Hola, me llamo ______. Encontré el estudio {id}, “{title}”, en {site}. Tengo {cancer} y quisiera saber si podría calificar.',
+ copy_script:'Copiar qué decir', share:'Compartir con mi médico', email_it:'Enviar por correo', copied:'Copiado',
+ share_text:'Estudio clínico para hablar en mi próxima cita:\n{title}\nID del estudio: {id}\nLugar: {site}, {place} (a {dist} millas)\nContacto: {contact}\nDetalles: {url}',
+ no_contact:'ver ClinicalTrials.gov', h_trials:'{n} estudios aquí', h_good:'{g} buenas opciones', h_contact:'Contacto: {c}', your_cancer:'cáncer'
+}};
+</script>
+<script src="shared.js"></script>
+<script>
+(function(){
+  const $ = id => document.getElementById(id);
+  const t = (k, v) => CS.t(k, v);
+  const API = 'https://clinicaltrials.gov/api/v2/studies';
+  const MODEL = 'claude-haiku-5-5';
+  const PAGE = 10;
+  const CANCERS = [
+    ['Breast Cancer','Cáncer de mama','breast'],['Prostate Cancer','Cáncer de próstata','prostat'],['Lung Cancer','Cáncer de pulmón','lung'],
+    ['Colorectal Cancer','Cáncer colorrectal','colo'],['Multiple Myeloma','Mieloma múltiple','myeloma'],['Pancreatic Cancer','Cáncer de páncreas','pancrea'],
+    ['Ovarian Cancer','Cáncer de ovario','ovar'],['Endometrial Cancer','Cáncer de útero (endometrio)','endometri'],['Cervical Cancer','Cáncer de cuello uterino','cervi'],
+    ['Stomach Cancer','Cáncer de estómago','gastr'],['Liver Cancer','Cáncer de hígado','hepat'],['Leukemia','Leucemia','leukem'],
+    ['Lymphoma','Linfoma','lymphom'],['Melanoma','Melanoma','melanom'],['Bladder Cancer','Cáncer de vejiga','bladder'],
+    ['Kidney Cancer','Cáncer de riñón','renal'],['Head and Neck Cancer','Cáncer de cabeza y cuello','head and neck'],['Brain Tumor','Tumor cerebral','glio'],
+    ['Thyroid Cancer','Cáncer de tiroides','thyroid']
+  ];
+  const state = { list: [], hidden: 0, shown: PAGE, view: 'trial', cond: '', place: '', radius: 50, total: 0, lastRun: null };
+
+  function fillCancers(){
+    const sel = $('cancer'), cur = sel.value, es = CS.lang() === 'es';
+    sel.innerHTML = '';
+    CANCERS.forEach(c => { const o = document.createElement('option'); o.value = c[0]; o.textContent = es ? c[1] : c[0]; sel.appendChild(o); });
+    const o = document.createElement('option'); o.value = '__other'; o.textContent = t('other'); sel.appendChild(o);
+    if (cur) sel.value = cur;
+  }
+
+  let aiAvailable = true;   // turned off for this visit if the AI service doesn't answer
+  const aiOn = () => aiAvailable;
+  const radioVal = n => (document.querySelector('input[name="' + n + '"]:checked') || {}).value;
+
+  // ---------- helpers ----------
+  function haversine(a, b){
+    const R = 3958.8, rad = x => x * Math.PI / 180;
+    const dLat = rad(b.lat - a.lat), dLon = rad(b.lon - a.lon);
+    const h = Math.sin(dLat/2)**2 + Math.cos(rad(a.lat))*Math.cos(rad(b.lat))*Math.sin(dLon/2)**2;
+    return 2 * R * Math.asin(Math.sqrt(h));
+  }
+  function ageYears(s){
+    if (!s) return null;
+    const m = String(s).match(/([\d.]+)\s*(year|month|week|day)/i);
+    if (!m) return null;
+    const n = parseFloat(m[1]), u = m[2].toLowerCase();
+    return u.startsWith('year') ? n : u.startsWith('month') ? n/12 : u.startsWith('week') ? n/52 : n/365;
+  }
+  const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  function setStatus(msg, err){ const el = $('status'); el.textContent = msg; el.className = 'status' + (err ? ' err' : ''); }
+  function cancerLabel(){
+    const c = CANCERS.find(x => x[0] === state.cond);
+    if (!c) return state.cond ? state.cond.toLowerCase() : t('your_cancer');
+    return (CS.lang() === 'es' ? c[1] : c[0]).toLowerCase();
+  }
+  async function copyText(text, btn){
+    let ok = false;
+    try { await navigator.clipboard.writeText(text); ok = true; } catch(e) {
+      const ta = document.createElement('textarea'); ta.value = text; document.body.appendChild(ta); ta.select();
+      try { ok = document.execCommand('copy'); } catch(_) {} ta.remove();
+    }
+    if (ok && btn){ const s = document.createElement('span'); s.className = 'copied'; s.textContent = t('copied'); btn.after(s); setTimeout(() => s.remove(), 2000); }
+  }
+
+  async function zipToPoint(zip){
+    const r = await fetch('https://api.zippopotam.us/us/' + encodeURIComponent(zip));
+    if (!r.ok) throw new Error('zip');
+    const j = await r.json(); const p = j.places && j.places[0];
+    return { lat: parseFloat(p.latitude), lon: parseFloat(p.longitude), place: p['place name'] + ', ' + p['state abbreviation'] };
+  }
+
+  // ---------- AI (runs on our server, so visitors need no key) ----------
+  async function callAI(path, body, ms){
+    const ctl = new AbortController(); const timer = setTimeout(() => ctl.abort(), ms || 45000);
+    try {
+      const r = await fetch('/api/' + path, { method:'POST', headers:{'content-type':'application/json'}, body: JSON.stringify(body), signal: ctl.signal });
+      if (!r.ok) throw new Error('ai ' + r.status);
+      return await r.json();
+    } finally { clearTimeout(timer); }
+  }
+  const fileToBase64 = f => new Promise((res, rej) => { const fr = new FileReader(); fr.onload = () => res(String(fr.result).split(',')[1]); fr.onerror = rej; fr.readAsDataURL(f); });
+  async function interpretCancer(text, file){
+    const body = { text };
+    if (file) body.image = { media_type: file.type || 'image/jpeg', data: await fileToBase64(file) };
+    const out = await callAI('interpret', body, 30000);
+    return out && out.condition ? out : null;
+  }
+  async function aiMatch(list, patient){
+    const pick = list.slice(0, 20);
+    const out = await callAI('match', { patient, trials: pick.map(x => ({ id: x.nct, title: x.title, summary: x.summary, eligibility: x.elig })) });
+    const byId = new Map((out.results || []).map(r => [r.id, r]));
+    pick.forEach(x => {
+      const r = byId.get(x.nct); if (!r) return;
+      x.rel = { tier: r.fit === 'good' ? 'good' : r.fit === 'unlikely' ? 'low' : 'maybe', score: 0, why: [], aiReason: r.reason };
+      x.ai = r.plain || ''; x.aiChecked = true;
+    });
+    return pick.filter(x => x.aiChecked).length;
+  }
+
+  // ---------- search ----------
+  async function fetchStudies(cond, pt, radius){
+    let token = null, all = [], total = null;
+    for (let page = 0; page < 3; page++){
+      const q = new URLSearchParams({ format:'json', 'query.cond':cond, 'filter.overallStatus':'RECRUITING',
+        'filter.geo':'distance(' + pt.lat.toFixed(4) + ',' + pt.lon.toFixed(4) + ',' + radius + 'mi)', pageSize:'100' });
+      if (page === 0) q.set('countTotal','true');
+      if (token) q.set('pageToken', token);
+      const r = await fetch(API + '?' + q.toString());
+      if (!r.ok) throw new Error('ct ' + r.status);
+      const j = await r.json();
+      if (total === null && typeof j.totalCount === 'number') total = j.totalCount;
+      all = all.concat(j.studies || []); token = j.nextPageToken;
+      if (!token) break;
+    }
+    return { studies: all, total };
+  }
+
+  // Relevance: simple keyword rules a patient's two answers can drive.
+  const RX = {
+    adv: /metasta|advanced|recurren|refractory|relapsed|unresectable|stage iv|stage 4|progress(ed|ion|ing)|second[- ]line|later[- ]line|previously treated/i,
+    early: /early[- ]stage|early breast|newly diagnosed|localized|stage i\b|stage ii\b|stage 1\b|stage 2\b|adjuvant|neoadjuvant|\boperable\b|\bresectable\b|curative/i,
+    prior: /after (a |one or more )?prior|progressed (on|after|following)|previously treated|refractory|relapsed|second[- ]line|following (prior|previous)|who have received/i,
+    naive: /previously untreated|treatment[- ]na[iï]ve|newly diagnosed|no prior (systemic )?(therapy|treatment)|first[- ]line|untreated|not received prior/i,
+    solid: /solid tumou?r|advanced cancers|multiple tumou?r types|selected tumou?rs/i,
+    fih: /first[- ]in[- ]human|dose[- ]escalation/i
+  };
+  function scoreTrial(s, stage, treat, nameKey){
+    const title = (s.title + ' ' + (s.official || '')).toLowerCase();
+    const text = (title + ' ' + s.conds + ' ' + s.summary).toLowerCase();
+    let score = 40; const why = [];
+    if (nameKey && title.includes(nameKey)){ score += 10; why.push(['w_name', 1]); }
+    const adv = RX.adv.test(text), early = RX.early.test(text);
+    if (stage === 'new'){
+      if (adv && !early){ score -= 40; why.push(['w_adv_bad', -1]); }
+      else if (early){ score += 20; why.push(['w_early', 1]); }
+    } else if (stage === 'adv'){
+      if (early && !adv){ score -= 40; why.push(['w_early_bad', -1]); }
+      else if (adv){ score += 20; why.push(['w_adv', 1]); }
+    }
+    const prior = RX.prior.test(text), naive = RX.naive.test(text);
+    if (treat === 'none'){
+      if (prior && !naive){ score -= 30; why.push(['w_prior_bad', -1]); }
+      else if (naive){ score += 10; why.push(['w_naive', 1]); }
+    } else if (naive && !prior){ score -= 15; why.push(['w_naive_bad', -1]); }
+    if (RX.solid.test(title) || RX.fih.test(title) || s.phase1){
+      score -= stage === 'adv' ? 5 : 25; why.push(['w_solid', stage === 'adv' ? 0 : -1]);
+    }
+    if (s.observational){ score -= 10; why.push(['w_obs', 0]); }
+    const tier = score >= 60 ? 'good' : score >= 35 ? 'maybe' : 'low';
+    return { score, tier, why };
+  }
+
+  function shape(study, pt, radius, age, sex){
+    const p = study.protocolSection || {};
+    const id = p.identificationModule || {}, el = p.eligibilityModule || {}, cl = p.contactsLocationsModule || {}, dm = p.designModule || {};
+    const minA = ageYears(el.minimumAge), maxA = ageYears(el.maximumAge);
+    const sexOk = !el.sex || el.sex === 'ALL' || el.sex === sex;
+    const ageOk = (minA === null || age >= minA) && (maxA === null || age <= maxA);
+    let best = null;
+    (cl.locations || []).forEach(loc => {
+      if (!loc.geoPoint || (loc.status && loc.status !== 'RECRUITING')) return;
+      const d = haversine(pt, { lat: loc.geoPoint.lat, lon: loc.geoPoint.lon });
+      if (d <= radius && (!best || d < best.d)) best = { d, loc };
+    });
+    if (!best) return null;
+    const contact = (best.loc.contacts && best.loc.contacts.find(c => c.phone || c.email)) || (cl.centralContacts && cl.centralContacts[0]) || null;
+    const phases = dm.phases || [];
+    return {
+      nct: id.nctId, title: id.briefTitle || id.officialTitle || 'Untitled study', official: id.officialTitle || '',
+      summary: (p.descriptionModule && p.descriptionModule.briefSummary) || '',
+      conds: ((p.conditionsModule && p.conditionsModule.conditions) || []).join(' ') + ' ' + ((p.conditionsModule && p.conditionsModule.keywords) || []).join(' '),
+      sponsor: p.sponsorCollaboratorsModule && p.sponsorCollaboratorsModule.leadSponsor && p.sponsorCollaboratorsModule.leadSponsor.name,
+      phase: phases.filter(x => x !== 'NA').map(x => x.replace('EARLY_PHASE1','Early phase 1').replace(/PHASE(\d)/,'Phase $1')).join(' / '),
+      phase1: phases.includes('PHASE1') || phases.includes('EARLY_PHASE1'), observational: dm.studyType === 'OBSERVATIONAL',
+      elig: el.eligibilityCriteria || '', minAge: el.minimumAge, maxAge: el.maximumAge, eligSex: el.sex, fits: sexOk && ageOk,
+      distance: best.d, loc: best.loc, contact
+    };
+  }
+
+  // ---------- rendering ----------
+  const tierRank = { good: 0, maybe: 1, low: 2 };
+  function contactText(c){ return c ? [c.name, c.phone, c.email].filter(Boolean).join(' · ') : t('no_contact'); }
+  function placeText(loc){ return [loc.city, loc.state].filter(Boolean).join(', '); }
+
+  function trialCard(tr, i){
+    const ag = v => CS.lang() === 'es' ? String(v).replace(/Years?/,'años').replace(/Months?/,'meses') : v;
+    const ageTxt = (tr.minAge || tr.maxAge) ? t('ages', { a: tr.minAge ? ag(tr.minAge) : t('any'), b: tr.maxAge ? ag(tr.maxAge) : t('any') }) : t('all_ages');
+    const sexTxt = !tr.eligSex || tr.eligSex === 'ALL' ? t('all_sex') : (tr.eligSex === 'FEMALE' ? t('women') : t('men'));
+    const why = tr.rel.aiReason || tr.rel.why.map(w => t(w[0])).join(' · ');
+    const url = 'https://clinicaltrials.gov/study/' + tr.nct;
+    const sum = tr.ai || (tr.summary.slice(0, 260) + (tr.summary.length > 260 ? '…' : ''));
+    const el = document.createElement('article');
+    el.className = 'trial' + (tr.rel.tier === 'low' ? ' low' : '');
+    el.innerHTML =
+      '<div class="top"><span class="dist">' + tr.distance.toFixed(1) + ' ' + t('mi') + '</span><span class="chips-row">' +
+        '<span class="chip ' + tr.rel.tier + '">' + esc(t(tr.rel.tier)) + '</span>' +
+        (tr.aiChecked ? '<span class="chip ai">' + esc(t('ai_chip')) + '</span>' : '') +
+        (tr.phase ? '<span class="chip">' + esc(tr.phase) + '</span>' : '') +
+        (tr.observational ? '<span class="chip">' + esc(t('obs')) + '</span>' : '') + '</span></div>' +
+      '<h3>' + esc(tr.title) + '</h3>' +
+      (why ? '<p class="why"><b>' + esc(t('why_title')) + '</b>' + esc(why) + '</p>' : '') +
+      '<p class="site">' + esc(tr.loc.facility || '') + '<br><small>' + esc([tr.loc.city, tr.loc.state, tr.loc.zip].filter(Boolean).join(', ')) + '</small></p>' +
+      '<p class="contact">' + esc(contactText(tr.contact)) + '</p>' +
+      '<p class="contact">' + esc(ageTxt + ' · ' + sexTxt + (tr.sponsor ? ' · ' + t('sponsor', { s: tr.sponsor }) : '')) + '</p>' +
+      '<p class="summary' + (tr.ai ? ' ai' : '') + '" data-sum="' + i + '">' + esc(sum) + '</p>' +
+      '<div class="row">' +
+        '<a href="' + esc(url) + '" target="_blank" rel="noopener">' + esc(t('details', { id: tr.nct })) + '</a></div>' +
+      '<details class="next"><summary>' + esc(t('next')) + '</summary><div class="next-body">' +
+        '<p>' + esc(t('next_1')) + '</p><p class="script" data-script="' + i + '"></p>' +
+        '<div class="row"><button class="ghost" type="button" data-copy="' + i + '">' + esc(t('copy_script')) + '</button></div>' +
+        '<p>' + esc(t('next_2')) + '</p><ul>' + ['q1','q2','q3','q4','q5','q6'].map(q => '<li>' + esc(t(q)) + '</li>').join('') + '</ul>' +
+        '<div class="row"><button class="ghost" type="button" data-share="' + i + '">' + esc(t('share')) + '</button><a data-mail="' + i + '" href="#">' + esc(t('email_it')) + '</a></div>' +
+      '</div></details>';
+    el.querySelector('[data-script]').textContent = scriptFor(tr);
+    el.querySelector('[data-mail]').href = 'mailto:?subject=' + encodeURIComponent(tr.nct + ' · ' + tr.title) + '&body=' + encodeURIComponent(shareFor(tr));
+    return el;
+  }
+  function scriptFor(tr){ return t('script', { id: tr.nct, title: tr.title, site: tr.loc.facility || '', cancer: cancerLabel() }); }
+  function shareFor(tr){ return t('share_text', { title: tr.title, id: tr.nct, site: tr.loc.facility || '', place: placeText(tr.loc), dist: tr.distance.toFixed(1), contact: contactText(tr.contact), url: 'https://clinicaltrials.gov/study/' + tr.nct }); }
+
+  function hospitalCards(){
+    const groups = new Map();
+    state.list.forEach(tr => {
+      const k = (tr.loc.facility || '') + '|' + (tr.loc.city || '');
+      if (!groups.has(k)) groups.set(k, { loc: tr.loc, d: tr.distance, trials: [], contact: null });
+      const g = groups.get(k); g.trials.push(tr); g.d = Math.min(g.d, tr.distance);
+      if (!g.contact && tr.contact && (tr.contact.phone || tr.contact.email)) g.contact = tr.contact;
+    });
+    return [...groups.values()].sort((a, b) => a.d - b.d).map(g => {
+      const good = g.trials.filter(x => x.rel.tier === 'good').length;
+      g.trials.sort((a, b) => tierRank[a.rel.tier] - tierRank[b.rel.tier]);
+      const el = document.createElement('article'); el.className = 'hosp';
+      el.innerHTML =
+        '<div class="top"><span class="dist">' + g.d.toFixed(1) + ' ' + t('mi') + '</span><span class="chips-row"><span class="chip">' + esc(t('h_trials', { n: g.trials.length })) + '</span>' +
+          (good ? '<span class="chip good">' + esc(t('h_good', { g: good })) + '</span>' : '') + '</span></div>' +
+        '<h3>' + esc(g.loc.facility || '') + '</h3><p class="site"><small>' + esc(placeText(g.loc)) + '</small></p>' +
+        '<p class="contact">' + esc(t('h_contact', { c: contactText(g.contact) })) + '</p>' +
+        '<ul>' + g.trials.map(x => '<li><span class="chip ' + x.rel.tier + '">' + esc(t(x.rel.tier)) + '</span> <a href="https://clinicaltrials.gov/study/' + esc(x.nct) + '" target="_blank" rel="noopener">' + esc(x.title) + '</a></li>').join('') + '</ul>';
+      return el;
+    });
+  }
+
+  function render(){
+    const box = $('results'); box.innerHTML = '';
+    const more = $('moreBtn');
+    if (!state.list.length){ $('toolbar').classList.add('hidden'); more.classList.add('hidden'); return; }
+    $('toolbar').classList.remove('hidden');
+    $('vTrial').setAttribute('aria-pressed', String(state.view === 'trial'));
+    $('vHosp').setAttribute('aria-pressed', String(state.view === 'hosp'));
+    if (state.view === 'hosp'){ hospitalCards().forEach(c => box.appendChild(c)); more.classList.add('hidden'); return; }
+    state.list.slice(0, state.shown).forEach((tr, i) => box.appendChild(trialCard(tr, i)));
+    const left = state.list.length - state.shown;
+    if (left > 0){ more.textContent = t('more_btn', { n: Math.min(PAGE, left) }); more.classList.remove('hidden'); } else more.classList.add('hidden');
+  }
+  function doneStatus(){
+    if (!state.list.length) return;
+    const g = state.list.filter(x => x.rel.tier === 'good').length, m = state.list.filter(x => x.rel.tier === 'maybe').length;
+    setStatus(t('st_done', { n: state.list.length, r: state.radius, place: state.place, g, m }) + (state.hidden ? t('st_hidden', { h: state.hidden }) : '') + (state.aiNote || ''));
+  }
+
+  $('results').addEventListener('click', async ev => {
+    const b = ev.target.closest('button'); if (!b) return;
+    if (b.dataset.copy !== undefined) copyText(scriptFor(state.list[+b.dataset.copy]), b);
+    else if (b.dataset.share !== undefined) copyText(shareFor(state.list[+b.dataset.share]), b);
+  });
+
+  async function run(ev, isExample){
+    if (ev) ev.preventDefault();
+    const zip = $('zip').value.trim(), age = parseFloat($('age').value), sex = $('sex').value, radius = parseInt($('radius').value, 10);
+    const stage = radioVal('stage'), treat = radioVal('treat');
+    if (!/^\d{5}$/.test(zip)){ setStatus(t('st_zip_bad'), true); $('zip').focus(); return; }
+    if (!(age >= 0 && age <= 120)){ setStatus(t('st_age_bad'), true); $('age').focus(); return; }
+    const text = $('describe').value.trim(), file = $('photo').files[0];
+    const picked = $('cancer').value;
+    let cond = picked === '__other' ? text : picked;
+    let nameKey = (CANCERS.find(c => c[0] === picked) || [])[2] || '';
+    $('go').disabled = true; $('interp').textContent = ''; state.list = []; render();
+    try {
+      let stageUse = stage;
+      if (text || file){
+        setStatus(t('st_reading'));
+        try {
+          const c = await interpretCancer(text, file);
+          if (c){ cond = c.condition; nameKey = cond.toLowerCase().replace(/cancer|tumou?r|carcinoma/g,'').trim().split(' ').pop(); if (stage === 'unsure' && c.stage !== 'unsure') stageUse = c.stage; $('interp').textContent = t('interp_ai', { c: cond }); }
+        } catch(e) { if (picked === '__other' && text){ $('interp').textContent = t('interp_txt', { c: text }); nameKey = ''; } }
+      }
+      if (!cond){ setStatus(t('st_need_cancer'), true); return; }
+      setStatus(t('st_locating'));
+      let pt; try { pt = await zipToPoint(zip); } catch(e){ setStatus(t('st_zip_nf'), true); return; }
+      setStatus(t('st_searching', { place: pt.place }));
+      let res; try { res = await fetchStudies(cond, pt, radius); } catch(e){ setStatus(t('st_ct_down'), true); return; }
+      const shaped = res.studies.map(s => shape(s, pt, radius, age, sex)).filter(Boolean);
+      const fits = shaped.filter(x => x.fits);
+      fits.forEach(x => { x.rel = scoreTrial(x, stageUse, treat, nameKey); });
+      fits.sort((a, b) => tierRank[a.rel.tier] - tierRank[b.rel.tier] || b.rel.score - a.rel.score || a.distance - b.distance);
+      Object.assign(state, { list: fits, hidden: shaped.length - fits.length, shown: PAGE, cond, place: pt.place, radius, example: !!isExample, aiNote: '' });
+      if (!fits.length){ setStatus(t('st_none', { r: radius, place: pt.place }), true); render(); return; }
+      render();   // show basic matches at once, then let the AI refine them
+      if (aiOn()){
+        const nearest = fits.slice().sort((a, b) => a.distance - b.distance);
+        setStatus(t('ai_reading', { n: Math.min(20, nearest.length) }));
+        try {
+          const n = await aiMatch(nearest, { age, sex, cancer: cond, stage: stageUse, treat, lang: CS.lang() });
+          if (n){
+            const checked = fits.filter(x => x.aiChecked).sort((a, b) => tierRank[a.rel.tier] - tierRank[b.rel.tier] || a.distance - b.distance);
+            const rest = fits.filter(x => !x.aiChecked);
+            state.list = checked.concat(rest);
+            state.aiNote = t('ai_done', { n });
+          }
+        } catch(e){ aiAvailable = false; state.aiNote = t('ai_off'); }
+      }
+      if (isExample) setStatus(t('st_example') + (state.aiNote || '')); else doneStatus();
+      render();
+    } finally { $('go').disabled = false; }
+  }
+
+  $('form').addEventListener('submit', e => run(e, false));
+  $('moreBtn').addEventListener('click', () => { state.shown += PAGE; render(); });
+  $('vTrial').addEventListener('click', () => { state.view = 'trial'; render(); });
+  $('vHosp').addEventListener('click', () => { state.view = 'hosp'; render(); });
+  CS.onLang(() => { fillCancers(); if (state.list.length){ if (state.example) setStatus(t('st_example') + (state.aiNote || '')); else doneStatus(); render(); } });
+  document.addEventListener('DOMContentLoaded', () => { fillCancers(); run(null, true); });
+})();
+</script>
+</body>
+</html>

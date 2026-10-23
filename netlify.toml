@@ -1,0 +1,8 @@
+# CanSearcher: static pages in this folder, AI helpers in netlify/functions.
+# The Anthropic key is NOT stored here: add it in Netlify as the environment variable ANTHROPIC_API_KEY.
+[build]
+  publish = "."
+  command = ""
+
+[functions]
+  directory = "netlify/functions"
